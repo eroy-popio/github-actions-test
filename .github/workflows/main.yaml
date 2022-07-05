@@ -28,6 +28,9 @@ jobs:
     - name: Earthly version
       run: earthly --version
 
+    - name: Current working directory
+      run: pwd
+
     - name: Earthly build docker image
       run: earthly +docker
 
