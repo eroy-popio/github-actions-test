@@ -30,6 +30,7 @@ jobs:
 
     - name: Current working directory
       run: pwd
+      run: ls
 
     - name: Earthly build docker image
       run: earthly +docker
