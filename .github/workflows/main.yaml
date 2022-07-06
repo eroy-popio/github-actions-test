@@ -68,5 +68,8 @@ jobs:
         ARGOCD_AUTH_TOKEN: ${{ secrets.ARGOCD_AUTH_TOKEN }}
       run: |
         curl --insecure -sSL -o /usr/local/bin/argocd https://${ARGOCD_SERVER}/download/argocd-linux-amd64
+        chmod 755 /usr/local/bin/argocd
         argocd app sync go-example-app
         argocd app wait go-example-app
+
+
