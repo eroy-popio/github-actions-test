@@ -28,7 +28,7 @@ jobs:
     - name: Earthly build docker image
       run: earthly +docker
 
-    -name: Tag image
+    - name: Tag image
       run: "docker tag go-example:latest 287241598491.dkr.ecr.us-west-2.amazonaws.com/application-build-docker-images:latest"
 
     - name: Push the Image to Amazon ECR
