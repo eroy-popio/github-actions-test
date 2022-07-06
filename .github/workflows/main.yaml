@@ -24,24 +24,13 @@ jobs:
 
     - name: Download latest earthly
       run: "sudo /bin/sh -c 'wget https://github.com/earthly/earthly/releases/download/v0.6.19/earthly-linux-amd64 -O /usr/local/bin/earthly && chmod +x /usr/local/bin/earthly'"
-    
-    - name: Earthly version
-      run: earthly --version
-
-    - name: Current working directory
-      run: pwd
-    - name: Fetching contents
-      run: ls
 
     - name: Earthly build docker image
       run: earthly +docker
 
-    - name: Tag, and Push the Image to Amazon ECR
-      id: build-image
-      env:
-        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        ECR_REPOSITORY: application-build-docker-images
-        IMAGE_TAG: latest
-      run: |
-        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+    -name: Tag image
+      run: docker tag go-example:latest 287241598491.dkr.ecr.us-west-2.amazonaws.com/application-build-docker-images:latest
+
+    - name: Push the Image to Amazon ECR
+      run:  docker push 287241598491.dkr.ecr.us-west-2.amazonaws.com/application-build-docker-images:latest
+      
