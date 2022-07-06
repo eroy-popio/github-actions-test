@@ -43,9 +43,9 @@ jobs:
         docker tag go-example:latest $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
     
-    - name: Echo ecr registry
+    - name: Write ECR registry into a file
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         ECR_REPOSITORY: application-build-docker-images
         IMAGE_TAG: ${{ steps.increment-git-tag.outputs.git-tag }}
-      run : echo $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+      run : $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG > newfile.txt
