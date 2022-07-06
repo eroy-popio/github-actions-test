@@ -69,7 +69,7 @@ jobs:
       run: |
         curl --insecure -sSL -o /usr/local/bin/argocd https://${ARGOCD_SERVER}/download/argocd-linux-amd64
         chmod 755 /usr/local/bin/argocd
-        echo y | argocd app sync go-example-app
-        echo y | argocd app wait go-example-app
+        argocd app sync go-example-app --insecure
+        argocd app wait go-example-app --insecure
 
 
