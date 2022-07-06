@@ -67,6 +67,6 @@ jobs:
         ARGOCD_SERVER: a921f0de06e1c4349b6e6f54cd8d3cec-1309917555.us-west-2.elb.amazonaws.com
         ARGOCD_AUTH_TOKEN: ${{ secrets.ARGOCD_AUTH_TOKEN }}
       run: |
-        curl -sSL -o /usr/local/bin/argocd https://${ARGOCD_SERVER}/download/argocd-linux-amd64
+        curl --insecure -sSL -o /usr/local/bin/argocd https://${ARGOCD_SERVER}/download/argocd-linux-amd64
         argocd app sync go-example-app
         argocd app wait go-example-app
