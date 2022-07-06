@@ -62,7 +62,7 @@ jobs:
         user_name: 'satvik-eltropy'
         commit_message: 'Pushed the AWS ECR registry link'
 
-    - name: Get argoCD CLI
+    - name: Get and run argoCD
       env:
         ARGOCD_SERVER: a921f0de06e1c4349b6e6f54cd8d3cec-1309917555.us-west-2.elb.amazonaws.com
         ARGOCD_AUTH_TOKEN: ${{ secrets.ARGOCD_AUTH_TOKEN }}
