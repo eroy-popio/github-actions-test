@@ -42,4 +42,6 @@ jobs:
       run: |
         docker tag go-example:latest $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-
+    
+    - name: Echo ecr registry
+      run : echo $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
