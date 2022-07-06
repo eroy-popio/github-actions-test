@@ -27,13 +27,26 @@ jobs:
 
     - name: Earthly build docker image
       run: earthly +docker
+
+    - name: Automatic Tagging of Releases
+      id: increment-git-tag
+      run: |
+        bash ./build/git_update.sh -v patch
     
     - name: Tag, and Push the Image to Amazon ECR
       id: build-image
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         ECR_REPOSITORY: application-build-docker-images
-        IMAGE_TAG: latest
+        IMAGE_TAG: ${{ steps.increment-git-tag.outputs.git-tag }}
       run: |
         docker tag go-example:latest $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+
+    - name: Write into a file
+      uses: DamianReeves/write-file-action
+      with:
+        path: ${{ env.home}}/deployment-config
+        contents: |
+          $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+        write-mode: overwrite
