@@ -8,7 +8,7 @@ func main() {
 	r := gin.Default()
 
         host := os.Getenv("HOSTNAME")
-        reply:= fmt.Sprintf("Hello from %s \n", host)
+        reply:= fmt.Sprintf("Hello from %s V2\n", host)
 	r.GET("/hello", func(c *gin.Context) {
 		c.String(200, reply)
 	})
