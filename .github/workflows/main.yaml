@@ -42,25 +42,6 @@ jobs:
       run: |
         docker tag go-example:latest $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-    
-    - name: Write ECR registry into a file
-      env:
-        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        ECR_REPOSITORY: application-build-docker-images
-        IMAGE_TAG: ${{ steps.increment-git-tag.outputs.git-tag }}
-      run : echo $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG > newfile.txt
-
-    - name: Pushes test file
-      uses: dmnemec/copy_file_to_another_repo_action@main
-      env:
-        API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
-      with:
-        source_file: 'newfile.txt'
-        destination_repo: 'satvik-eltropy/deployment-config'
-        destination_folder: 'go-example'
-        user_email: 'satvik@eltropy.com'
-        user_name: 'satvik-eltropy'
-        commit_message: 'Pushed the AWS ECR registry link'
 
     - name: Checkout different repo
       uses: actions/checkout@v3
@@ -71,6 +52,25 @@ jobs:
 
     - name : List content
       run: ls
+
+    - name: Patch yaml file
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        ECR_REPOSITORY: application-build-docker-images
+        IMAGE_TAG: ${{ steps.increment-git-tag.outputs.git-tag }}
+      run: kubectl patch --local -f deployment-config/go-example/go-example-deployment.yaml -p '{"spec":{"template":{"spec":{"containers":[{"name":"go-example","image":$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG}]}}}}' -o yaml > go-example-deployment.yaml
+
+    - name: Pushes test file
+      uses: dmnemec/copy_file_to_another_repo_action@main
+      env:
+        API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
+      with:
+        source_file: 'go-example-deployment.yaml'
+        destination_repo: 'satvik-eltropy/deployment-config'
+        destination_folder: 'go-example'
+        user_email: 'satvik@eltropy.com'
+        user_name: 'satvik-eltropy'
+        commit_message: 'Pushed the AWS ECR registry link'
 
     - name: Get and run argoCD
       env:
