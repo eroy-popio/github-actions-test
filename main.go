@@ -1,12 +1,16 @@
 package main
 
 import "github.com/gin-gonic/gin"
+import "fmt"
+import "os"
 
 func main() {
 	r := gin.Default()
 
+        host := os.Getenv("HOSTNAME")
+        reply:= fmt.Sprintf("Hello from %s \n", host)
 	r.GET("/hello", func(c *gin.Context) {
-		c.String(200, "Hello, World!123455")
+		c.String(200, reply)
 	})
 
 	r.Run(":3000")
