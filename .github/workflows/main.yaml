@@ -54,11 +54,7 @@ jobs:
       run: ls
 
     - name: Patch yaml file
-      env:
-        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        ECR_REPOSITORY: application-build-docker-images
-        IMAGE_TAG: ${{ steps.increment-git-tag.outputs.git-tag }}
-      run: kubectl patch --local -f deployment-config/go-example/go-example-deployment.yaml -p '{"spec":{"template":{"spec":{"containers":[{"name":"go-example","image":$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG}]}}}}' -o yaml > go-example-deployment.yaml
+      run: kubectl patch --local -f deployment-config/go-example/go-example-deployment.yaml -p '{"spec":{"template":{"spec":{"containers":[{"name":"go-example","image":${{ steps.login-ecr.outputs.registry }}/application-build-docker-images:${{ steps.increment-git-tag.outputs.git-tag }}}]}}}}' -o yaml > go-example-deployment.yaml
 
     - name: Pushes test file
       uses: dmnemec/copy_file_to_another_repo_action@main
