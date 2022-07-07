@@ -63,10 +63,11 @@ jobs:
         commit_message: 'Pushed the AWS ECR registry link'
 
     - name: Checkout different repo
-      uses: actions/checkout@master
+      uses: actions/checkout@v3
       with:
-        name: satvik-eltropy/deployment-config
+        repository: satvik-eltropy/deployment-config
         ref: main
+        path: deployment-config
 
     - name : List content
       run: ls
