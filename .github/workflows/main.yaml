@@ -53,10 +53,23 @@ jobs:
     - name : List content
       run: ls
 
-    - name: Patch yaml file
-      run: kubectl patch --local -f deployment-config/go-example/go-example-deployment.yaml -p '{"spec":{"template":{"spec":{"containers":[{"name":"go-example","image":"${{ steps.login-ecr.outputs.registry }}/application-build-docker-images:${{ steps.increment-git-tag.outputs.git-tag }}"}]}}}}' -o yaml > go-example-deployment.yaml
+    - name: Patch yaml files
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        ECR_REPOSITORY: application-build-docker-images
+        IMAGE_TAG: ${{ steps.increment-git-tag.outputs.git-tag }}
+      run: |
+        kubectl patch --local -f deployment-config/go-example/go-example-deployment.yaml -p '{"spec":{"template":{"spec":{"containers":[{"name":"go-example","image":"$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"}]}}}}' -o yaml > go-example-deployment.yaml
+        kubectl patch --local -f deployment-config/go-app1/go-app1-deployment.yaml -p '{"spec":{"template":{"spec":{"containers":[{"name":"go-app","image":"$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"}]}}}}' -o yaml > go-app1-deployment.yaml
+        kubectl patch --local -f deployment-config/go-app2/go-app2-deployment.yaml -p '{"spec":{"template":{"spec":{"containers":[{"name":"go-app","image":"$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"}]}}}}' -o yaml > go-app2-deployment.yaml
 
-    - name: Pushes test file
+    - name: Check repo
+      run: |
+        cd deployment-config
+        git status
+        cd ..
+
+    - name: Push go-example-deployment.yaml file
       uses: dmnemec/copy_file_to_another_repo_action@main
       env:
         API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
@@ -64,6 +77,30 @@ jobs:
         source_file: 'go-example-deployment.yaml'
         destination_repo: 'satvik-eltropy/deployment-config'
         destination_folder: 'go-example'
+        user_email: 'satvik@eltropy.com'
+        user_name: 'satvik-eltropy'
+        commit_message: 'Pushed the AWS ECR registry link'
+
+    - name: Push go-app1-deployment.yaml file
+      uses: dmnemec/copy_file_to_another_repo_action@main
+      env:
+        API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
+      with:
+        source_file: 'go-app1-deployment.yaml'
+        destination_repo: 'satvik-eltropy/deployment-config'
+        destination_folder: 'go-app1'
+        user_email: 'satvik@eltropy.com'
+        user_name: 'satvik-eltropy'
+        commit_message: 'Pushed the AWS ECR registry link'
+
+    - name: Push go-app2-deployment.yaml file
+      uses: dmnemec/copy_file_to_another_repo_action@main
+      env:
+        API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
+      with:
+        source_file: 'go-app2-deployment.yaml'
+        destination_repo: 'satvik-eltropy/deployment-config'
+        destination_folder: 'go-app2'
         user_email: 'satvik@eltropy.com'
         user_name: 'satvik-eltropy'
         commit_message: 'Pushed the AWS ECR registry link'
@@ -77,5 +114,9 @@ jobs:
         chmod 755 /usr/local/bin/argocd
         argocd app sync go-example-app --insecure
         argocd app wait go-example-app --insecure
+        argocd app sync go-app1 --insecure
+        argocd app wait go-app1 --insecure
+        argocd app sync go-app2 --insecure
+        argocd app wait go-app2 --insecure
 
 
