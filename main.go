@@ -8,7 +8,7 @@ func main() {
 	r := gin.Default()
 
 	host := os.Getenv("HOSTNAME")
-	reply:= fmt.Sprintf("Hello from %s V2\n", host)
+	reply:= fmt.Sprintf("Hello from %s V2 \n", host)
 	appName := os.Getenv("APPNAME")
 	if appName == "" {
 		appName = "app"
