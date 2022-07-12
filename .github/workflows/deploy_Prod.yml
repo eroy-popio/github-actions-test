@@ -16,7 +16,7 @@ jobs:
       env_name: Production
    secrets:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         github-api-token: ${{ secrets.API_TOKEN_GITHUB }}
         argocd-auth-token: ${{ secrets.ARGOCD_AUTH_TOKEN }}
   
@@ -27,7 +27,7 @@ jobs:
       env_name: Dev
    secrets:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         github-api-token: ${{ secrets.API_TOKEN_GITHUB }}
         argocd-auth-token: ${{ secrets.ARGOCD_AUTH_TOKEN }}
         
