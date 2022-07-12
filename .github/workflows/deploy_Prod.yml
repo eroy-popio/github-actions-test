@@ -28,7 +28,6 @@ jobs:
    secrets:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-region: us-west-2
         github-api-token: ${{ secrets.API_TOKEN_GITHUB }}
         argocd-auth-token: ${{ secrets.ARGOCD_AUTH_TOKEN }}
         
