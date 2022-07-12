@@ -14,13 +14,13 @@ jobs:
       run: |
         bash ./build/git_update.sh -v patch
     - name: Echo tag
-      run: echo ${{ jobs.steps.increment-git-tag.outputs.git-tag }}
+      run: echo ${{ before_deploy.steps.increment-git-tag.outputs.git-tag }}
         
   deploy:
    needs: [before_deploy]
    uses: satvik-eltropy/github-actions-test/.github/workflows/build&deploy.yml@main
    with:
-    tag: ${{ jobs.steps.increment-git-tag.outputs.git-tag }}
+    tag: ${{ before_deploy.steps.increment-git-tag.outputs.git-tag }}
    secrets:
     aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
     aws-secret-access-key: ${{ secrets.AWS_ACCESS_KEY_ID }}
