@@ -4,16 +4,16 @@ on:
   workflow_dispatch:
    inputs:
     releaseType:
-     description: "Where to release? (Prod or Dev)"
+     description: 'Where to release? (Prod or Dev)'
      required: true
-     default: "Dev"
+     default: 'Dev'
 
 jobs:
   prod:
-   if: github.event.inputs.releaseType == "Prod"
+   if: github.event.inputs.releaseType == 'Prod'
    uses: satvik-eltropy/github-actions-test/.github/workflows/build&deploy.yml@main
    with:
-      env_name: "Production"
+      env_name: Production
    secrets:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -22,10 +22,10 @@ jobs:
         argocd-auth-token: ${{ secrets.ARGOCD_AUTH_TOKEN }}
   
   dev:
-   if: github.event.inputs.releaseType == "Dev"
+   if: github.event.inputs.releaseType == 'Dev'
    uses: satvik-eltropy/github-actions-test/.github/workflows/build&deploy.yml@main
    with:
-      env_name: "Dev"
+      env_name: Dev
    secrets:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_ACCESS_KEY_ID }}
