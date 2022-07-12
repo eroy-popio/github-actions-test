@@ -19,13 +19,13 @@ jobs:
   build-and-push:
     name: Build and Push to ECR
     runs-on: ubuntu-latest
-    environment: ${{ inputs.env_name }}
+    #environment: ${{ inputs.env_name }}
     steps:
     - name: Checkout
       uses: actions/checkout@v2
       
-    - name: Echo AWS Creds
-      run: echo ${{ secrets.aws-access-key-id }}
+    - name: Environment
+      run: echo ${{ inputs.env_name }}
 
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
