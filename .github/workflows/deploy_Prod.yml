@@ -1,0 +1,32 @@
+name: A workflow to deploy for Production environment 
+
+on:
+  workflow_dispatch:
+
+jobs:
+  before_deploy:
+   runs-on: ubuntu-latest
+   environment: Production
+   
+   steps:
+    - name: Automatic Tagging of Releases
+      id: increment-git-tag
+      run: |
+        bash ./build/git_update.sh -v patch
+    - name: Echo tag
+      run: echo ${{ jobs.steps.increment-git-tag.outputs.git-tag }}
+        
+  deploy:
+   needs: [before_deploy]
+   uses: satvik-eltropy/github-actions-test/.github/workflows/build&deploy.yml@main
+   with:
+    tag: ${{ jobs.steps.increment-git-tag.outputs.git-tag }}
+   secrets:
+    aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+    aws-secret-access-key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+    aws-region: us-west-2
+    github-api-token: ${{ secrets.API_TOKEN_GITHUB }}
+    argocd-auth-token: ${{ secrets.ARGOCD_AUTH_TOKEN }}
+
+    
+  
