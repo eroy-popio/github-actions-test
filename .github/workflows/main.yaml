@@ -76,7 +76,8 @@ jobs:
         git commit -am "Updated the ecr image link in deployment files"
         git status
         echo ${API_TOKEN_GITHUB}
-        git push https://${API_TOKEN_GITHUB}@github.com/${GITHUB_NAME}/deployment-config.git
+        echo ${GITHUB_NAME}
+        git push https://${{ secrets.API_TOKEN_GITHUB }}@github.com/satvik-eltropy/deployment-config.git
         cd ..
 
     
