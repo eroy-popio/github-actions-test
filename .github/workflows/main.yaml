@@ -2,7 +2,7 @@ name: Build and push golang image to AWS ECR instance
 
 on:
   push:
-   branch: [ main ]
+   branches: [ main ]
 jobs:
   build-and-push:
     name: Build and Push to ECR
@@ -64,15 +64,15 @@ jobs:
 
     - name: Check repo
       env:
-        email: satvik@eltropy.com
-        name: satvik-eltropy
-        access_token: ${{ secrets.API_TOKEN_GITHUB }}
+        GITHUB_EMAIL: satvik@eltropy.com
+        GITHUB_NAME: satvik-eltropy
+        API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
       run: |
         cd deployment-config
         git log -1
         git status
-        git config user.email ${{ email }}
-        git config user.name ${{ name }}
+        git config user.email ${{ GITHUB_EMAIL }}
+        git config user.name ${{ GITHUB_NAME }}
         git commit -am "Updated the ecr image link in deployment files"
         git status
         git push
