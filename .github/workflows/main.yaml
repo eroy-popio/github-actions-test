@@ -11,9 +11,19 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
       with:
-        persist-credentials: false # otherwise, the token used is the GITHUB_TOKEN, instead of your personal access token.
-#         fetch-depth: 0 # otherwise, there would be errors pushing refs to the destination repository.
+#         persist-credentials: false # otherwise, the token used is the GITHUB_TOKEN, instead of your personal access token.
         path: github-actions-test
+        
+    - name: Checkout different repo
+      uses: actions/checkout@v3
+      with:
+#         persist-credentials: false # otherwise, the token used is the GITHUB_TOKEN, instead of your personal access token.
+        fetch-depth: 0 # otherwise, there would be errors pushing refs to the destination repository.
+        repository: satvik-eltropy/deployment-config
+        ref: main
+        path: deployment-config
+        token: ${{ secrets.API_TOKEN_GITHUB }}
+
 
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
@@ -25,51 +35,30 @@ jobs:
     - name: Login to Amazon ECR
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
-      
-    - name: Change dir
+
+    - name: Download latest earthly
+      run: "sudo /bin/sh -c 'wget https://github.com/earthly/earthly/releases/download/v0.6.19/earthly-linux-amd64 -O /usr/local/bin/earthly && chmod +x /usr/local/bin/earthly'"
+
+    - name: Earthly build docker image
       run: |
-        ls
         cd github-actions-test
-        ls
-
-#     - name: Download latest earthly
-#       run: "sudo /bin/sh -c 'wget https://github.com/earthly/earthly/releases/download/v0.6.19/earthly-linux-amd64 -O /usr/local/bin/earthly && chmod +x /usr/local/bin/earthly'"
-
-#     - name: Earthly build docker image
-#       run: earthly +docker
+        earthly +docker
 
     - name: Automatic Tagging of Releases
       id: increment-git-tag
       run: |
-        ls
         cd github-actions-test
-        ls
         bash ./build/git_update.sh -v patch
     
-#     - name: Tag, and Push the Image to Amazon ECR
-#       id: build-image
-#       env:
-#         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-#         ECR_REPOSITORY: application-build-docker-images
-#         IMAGE_TAG: ${{ steps.increment-git-tag.outputs.git-tag }}
-#       run: |
-#         docker tag go-example:latest $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-#         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-
-    - name: Change dir
-      run: cd ..
-      
-    - name: Checkout different repo
-      uses: actions/checkout@v3
-      with:
-        persist-credentials: false # otherwise, the token used is the GITHUB_TOKEN, instead of your personal access token.
-        fetch-depth: 0 # otherwise, there would be errors pushing refs to the destination repository.
-        repository: satvik-eltropy/deployment-config
-        ref: main
-        path: deployment-config
-
-    - name : List content
-      run: ls
+    - name: Tag, and Push the Image to Amazon ECR
+      id: build-image
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        ECR_REPOSITORY: application-build-docker-images
+        IMAGE_TAG: ${{ steps.increment-git-tag.outputs.git-tag }}
+      run: |
+        docker tag go-example:latest $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
     - name: Patch yaml files
       run: |
@@ -84,7 +73,6 @@ jobs:
       env:
         GITHUB_EMAIL: satvik@eltropy.com
         GITHUB_NAME: satvik-eltropy
-        API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
       run: |
         cd deployment-config
         git log -1
@@ -94,18 +82,16 @@ jobs:
         git commit -am "Updated the ecr image link in deployment files"
         git status
         git show
-        git fetch
-        git status
-        echo ${API_TOKEN_GITHUB}
-        echo ${GITHUB_NAME}
+        git push
+
     
-    - name: Push changes
-      uses: ad-m/github-push-action@master
-      with:
-        github_token: ${{ secrets.API_TOKEN_GITHUB }}
-        repository: satvik-eltropy/deployment-config
-        branch: main
-        directory: deployment-config
+#     - name: Push changes
+#       uses: ad-m/github-push-action@master
+#       with:
+#         github_token: ${{ secrets.API_TOKEN_GITHUB }}
+#         repository: satvik-eltropy/deployment-config
+#         branch: main
+#         directory: deployment-config
           
     - name: Get and run argoCD
       env:
