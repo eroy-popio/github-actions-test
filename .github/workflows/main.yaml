@@ -16,7 +16,9 @@ jobs:
         path: github-actions-test
         
     - name: Change dir
-      run: cd github-actions-test
+      run: |
+        ls
+        cd github-actions-test
 
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
