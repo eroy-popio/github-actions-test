@@ -105,6 +105,7 @@ jobs:
         github_token: ${{ secrets.API_TOKEN_GITHUB }}
         repository: satvik-eltropy/deployment-config
         branch: main
+        directory: deployment-config
           
     - name: Get and run argoCD
       env:
