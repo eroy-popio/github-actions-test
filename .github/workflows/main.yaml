@@ -67,44 +67,12 @@ jobs:
         cd deployment-config
         git log -1
         git status
+        git commit -am "Updated the ecr image link in deployment files"
+        git status
+        git push
         cd ..
 
-    - name: Push go-example-deployment.yaml file
-      uses: dmnemec/copy_file_to_another_repo_action@main
-      env:
-        API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
-      with:
-        source_file: 'go-example-deployment.yaml'
-        destination_repo: 'satvik-eltropy/deployment-config'
-        destination_folder: 'go-example'
-        user_email: 'satvik@eltropy.com'
-        user_name: 'satvik-eltropy'
-        commit_message: 'Pushed the AWS ECR registry link'
-
-    - name: Push go-app1-deployment.yaml file
-      uses: dmnemec/copy_file_to_another_repo_action@main
-      env:
-        API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
-      with:
-        source_file: 'go-app1-deployment.yaml'
-        destination_repo: 'satvik-eltropy/deployment-config'
-        destination_folder: 'go-app1'
-        user_email: 'satvik@eltropy.com'
-        user_name: 'satvik-eltropy'
-        commit_message: 'Pushed the AWS ECR registry link'
-
-    - name: Push go-app2-deployment.yaml file
-      uses: dmnemec/copy_file_to_another_repo_action@main
-      env:
-        API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
-      with:
-        source_file: 'go-app2-deployment.yaml'
-        destination_repo: 'satvik-eltropy/deployment-config'
-        destination_folder: 'go-app2'
-        user_email: 'satvik@eltropy.com'
-        user_name: 'satvik-eltropy'
-        commit_message: 'Pushed the AWS ECR registry link'
-
+    
     - name: Get and run argoCD
       env:
         ARGOCD_SERVER: a921f0de06e1c4349b6e6f54cd8d3cec-1309917555.us-west-2.elb.amazonaws.com
