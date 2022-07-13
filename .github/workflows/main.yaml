@@ -9,21 +9,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
-      with:
-#         persist-credentials: false # otherwise, the token used is the GITHUB_TOKEN, instead of your personal access token.
-        path: github-actions-test
-        
-    - name: Checkout different repo
       uses: actions/checkout@v3
       with:
-#         persist-credentials: false # otherwise, the token used is the GITHUB_TOKEN, instead of your personal access token.
+        path: github-actions-test
+        
+    - name: Checkout deployment-config repo
+      uses: actions/checkout@v3
+      with:
         fetch-depth: 0 # otherwise, there would be errors pushing refs to the destination repository.
         repository: satvik-eltropy/deployment-config
         ref: main
         path: deployment-config
         token: ${{ secrets.API_TOKEN_GITHUB }}
-
 
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
@@ -60,7 +57,7 @@ jobs:
         docker tag go-example:latest $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
-    - name: Patch yaml files
+    - name: Patch the deployment.yaml files
       run: |
         kubectl patch --local -f deployment-config/go-example/go-example-deployment.yaml -p '{"spec":{"template":{"spec":{"containers":[{"name":"go-example","image":"${{ steps.login-ecr.outputs.registry }}/application-build-docker-images:${{ steps.increment-git-tag.outputs.git-tag }}"}]}}}}' -o yaml > go-example-deployment.yaml
         mv go-example-deployment.yaml deployment-config/go-example/go-example-deployment.yaml
@@ -69,30 +66,18 @@ jobs:
         kubectl patch --local -f deployment-config/go-app2/go-app2-deployment.yaml -p '{"spec":{"template":{"spec":{"containers":[{"name":"go-app","image":"${{ steps.login-ecr.outputs.registry }}/application-build-docker-images:${{ steps.increment-git-tag.outputs.git-tag }}"}]}}}}' -o yaml > go-app2-deployment.yaml
         mv go-app2-deployment.yaml deployment-config/go-app2/go-app2-deployment.yaml
 
-    - name: Check repo
+    - name: Commit changes to deployment-config repo
       env:
         GITHUB_EMAIL: satvik@eltropy.com
         GITHUB_NAME: satvik-eltropy
       run: |
         cd deployment-config
-        ls
         git log -1
         git status
         git config user.email ${GITHUB_EMAIL}
         git config user.name ${GITHUB_NAME}
         git commit -am "Updated the ecr image link in deployment files"
-        git status
-        git show
         git push
-
-    
-#     - name: Push changes
-#       uses: ad-m/github-push-action@master
-#       with:
-#         github_token: ${{ secrets.API_TOKEN_GITHUB }}
-#         repository: satvik-eltropy/deployment-config
-#         branch: main
-#         directory: deployment-config
           
     - name: Get and run argoCD
       env:
