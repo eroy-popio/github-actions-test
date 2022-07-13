@@ -71,8 +71,8 @@ jobs:
         cd deployment-config
         git log -1
         git status
-        git config user.email ${{ GITHUB_EMAIL }}
-        git config user.name ${{ GITHUB_NAME }}
+        git config user.email ${GITHUB_EMAIL}
+        git config user.name ${GITHUB_NAME}
         git commit -am "Updated the ecr image link in deployment files"
         git status
         git push
