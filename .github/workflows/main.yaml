@@ -14,12 +14,6 @@ jobs:
         persist-credentials: false # otherwise, the token used is the GITHUB_TOKEN, instead of your personal access token.
 #         fetch-depth: 0 # otherwise, there would be errors pushing refs to the destination repository.
         path: github-actions-test
-        
-    - name: Change dir
-      run: |
-        ls
-        cd github-actions-test
-        ls
 
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
@@ -31,6 +25,12 @@ jobs:
     - name: Login to Amazon ECR
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
+      
+    - name: Change dir
+      run: |
+        ls
+        cd github-actions-test
+        ls
 
 #     - name: Download latest earthly
 #       run: "sudo /bin/sh -c 'wget https://github.com/earthly/earthly/releases/download/v0.6.19/earthly-linux-amd64 -O /usr/local/bin/earthly && chmod +x /usr/local/bin/earthly'"
@@ -42,7 +42,8 @@ jobs:
       id: increment-git-tag
       run: |
         ls
-        ls ./
+        cd github-actions-test
+        ls
         bash ./build/git_update.sh -v patch
     
 #     - name: Tag, and Push the Image to Amazon ECR
