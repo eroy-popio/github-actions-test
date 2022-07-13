@@ -75,6 +75,7 @@ jobs:
         git config user.name ${GITHUB_NAME}
         git commit -am "Updated the ecr image link in deployment files"
         git status
+        echo ${API_TOKEN_GITHUB}
         git push https://${API_TOKEN_GITHUB}@github.com/${GITHUB_NAME}/deployment-config.git
         cd ..
 
