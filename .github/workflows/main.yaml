@@ -22,26 +22,26 @@ jobs:
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
 
-    - name: Download latest earthly
-      run: "sudo /bin/sh -c 'wget https://github.com/earthly/earthly/releases/download/v0.6.19/earthly-linux-amd64 -O /usr/local/bin/earthly && chmod +x /usr/local/bin/earthly'"
+#     - name: Download latest earthly
+#       run: "sudo /bin/sh -c 'wget https://github.com/earthly/earthly/releases/download/v0.6.19/earthly-linux-amd64 -O /usr/local/bin/earthly && chmod +x /usr/local/bin/earthly'"
 
-    - name: Earthly build docker image
-      run: earthly +docker
+#     - name: Earthly build docker image
+#       run: earthly +docker
 
     - name: Automatic Tagging of Releases
       id: increment-git-tag
       run: |
         bash ./build/git_update.sh -v patch
     
-    - name: Tag, and Push the Image to Amazon ECR
-      id: build-image
-      env:
-        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        ECR_REPOSITORY: application-build-docker-images
-        IMAGE_TAG: ${{ steps.increment-git-tag.outputs.git-tag }}
-      run: |
-        docker tag go-example:latest $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+#     - name: Tag, and Push the Image to Amazon ECR
+#       id: build-image
+#       env:
+#         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+#         ECR_REPOSITORY: application-build-docker-images
+#         IMAGE_TAG: ${{ steps.increment-git-tag.outputs.git-tag }}
+#       run: |
+#         docker tag go-example:latest $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+#         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
     - name: Checkout different repo
       uses: actions/checkout@v3
@@ -77,7 +77,6 @@ jobs:
         git status
         echo ${API_TOKEN_GITHUB}
         echo ${GITHUB_NAME}
-        cd ..
     
     - name: Push changes
       uses: ad-m/github-push-action@master
