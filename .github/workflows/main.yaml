@@ -63,10 +63,16 @@ jobs:
         cp go-app2-deployment.yaml deployment-config/go-app2/go-app2-deployment.yaml
 
     - name: Check repo
+      env:
+        email: satvik@eltropy.com
+        name: satvik-eltropy
+        access_token: ${{ secrets.API_TOKEN_GITHUB }}
       run: |
         cd deployment-config
         git log -1
         git status
+        git config user.email ${{ email }}
+        git config user.name ${{ name }}
         git commit -am "Updated the ecr image link in deployment files"
         git status
         git push
