@@ -77,7 +77,7 @@ jobs:
         git status
         echo ${API_TOKEN_GITHUB}
         echo ${GITHUB_NAME}
-        git push https://${{ secrets.API_TOKEN_GITHUB }}@github.com/satvik-eltropy/deployment-config.git
+        git push https://satvik-eltropy:${{ secrets.API_TOKEN_GITHUB }}@github.com/satvik-eltropy/deployment-config.git
         cd ..
 
     
