@@ -77,10 +77,15 @@ jobs:
         git status
         echo ${API_TOKEN_GITHUB}
         echo ${GITHUB_NAME}
-        git push https://satvik-eltropy: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@github.com/satvik-eltropy/deployment-config.git
         cd ..
-
     
+    - name: Push changes
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.API_TOKEN_GITHUB }}
+        repository: satvik-eltropy/deployment-config
+        branch: main
+          
     - name: Get and run argoCD
       env:
         ARGOCD_SERVER: a921f0de06e1c4349b6e6f54cd8d3cec-1309917555.us-west-2.elb.amazonaws.com
