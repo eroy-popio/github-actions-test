@@ -26,5 +26,9 @@ func main() {
 		os.Exit(0)
 	})
 
+	r.GET("/"+appName+"/health", func(c *gin.Context) {
+		c.String(200, "Success")
+	})
+
 	r.Run(":3000")
 }
