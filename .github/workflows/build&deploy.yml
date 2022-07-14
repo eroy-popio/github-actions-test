@@ -19,19 +19,26 @@ jobs:
   build-and-push:
     name: Build and Push to ECR
     runs-on: ubuntu-latest
-    environment: ${{ inputs.env_name }}
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
-      
-    - name: Environment
-      run: echo ${{ inputs.env_name }}
+      uses: actions/checkout@v3
+      with:
+        path: github-actions-test
+        
+    - name: Checkout deployment-config repo
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0 # otherwise, there would be errors pushing refs to the destination repository.
+        repository: satvik-eltropy/deployment-config
+        ref: main
+        path: deployment-config
+        token: ${{ secrets.API_TOKEN_GITHUB }}
 
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
-        aws-access-key-id: ${{ secrets.aws-access-key-id }}
-        aws-secret-access-key: ${{ secrets.aws-secret-access-key }}
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: us-west-2
 
     - name: Login to Amazon ECR
@@ -42,11 +49,13 @@ jobs:
       run: "sudo /bin/sh -c 'wget https://github.com/earthly/earthly/releases/download/v0.6.19/earthly-linux-amd64 -O /usr/local/bin/earthly && chmod +x /usr/local/bin/earthly'"
 
     - name: Earthly build docker image
-      run: earthly +docker
-      
+      run: |
+        cd github-actions-test
+        earthly +docker
     - name: Automatic Tagging of Releases
       id: increment-git-tag
       run: |
+        cd github-actions-test
         bash ./build/git_update.sh -v patch
     
     - name: Tag, and Push the Image to Amazon ECR
@@ -58,73 +67,23 @@ jobs:
       run: |
         docker tag go-example:latest $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-    - name: Checkout different repo
-      uses: actions/checkout@v3
-      with:
-        repository: satvik-eltropy/deployment-config
-        ref: main
-        path: deployment-config
-
-    - name : List content
-      run: ls
-
-    - name: Patch yaml files
+    - name: Patch the deployment.yaml files
       run: |
         kubectl patch --local -f deployment-config/go-example/go-example-deployment.yaml -p '{"spec":{"template":{"spec":{"containers":[{"name":"go-example","image":"${{ steps.login-ecr.outputs.registry }}/application-build-docker-images:${{ steps.increment-git-tag.outputs.git-tag }}"}]}}}}' -o yaml > go-example-deployment.yaml
+        mv go-example-deployment.yaml deployment-config/go-example/go-example-deployment.yaml
         kubectl patch --local -f deployment-config/go-app1/go-app1-deployment.yaml -p '{"spec":{"template":{"spec":{"containers":[{"name":"go-app","image":"${{ steps.login-ecr.outputs.registry }}/application-build-docker-images:${{ steps.increment-git-tag.outputs.git-tag }}"}]}}}}' -o yaml > go-app1-deployment.yaml
+        mv go-app1-deployment.yaml deployment-config/go-app1/go-app1-deployment.yaml
         kubectl patch --local -f deployment-config/go-app2/go-app2-deployment.yaml -p '{"spec":{"template":{"spec":{"containers":[{"name":"go-app","image":"${{ steps.login-ecr.outputs.registry }}/application-build-docker-images:${{ steps.increment-git-tag.outputs.git-tag }}"}]}}}}' -o yaml > go-app2-deployment.yaml
-    - name: Check repo
+        mv go-app2-deployment.yaml deployment-config/go-app2/go-app2-deployment.yaml
+    - name: Commit changes to deployment-config repo
+      env:
+        GITHUB_EMAIL: satvik@eltropy.com
+        GITHUB_NAME: satvik-eltropy
       run: |
         cd deployment-config
         git log -1
         git status
-        cd ..
-    - name: Push go-example-deployment.yaml file
-      uses: dmnemec/copy_file_to_another_repo_action@main
-      env:
-        API_TOKEN_GITHUB: ${{ secrets.github-api-token }}
-      with:
-        source_file: 'go-example-deployment.yaml'
-        destination_repo: 'satvik-eltropy/deployment-config'
-        destination_folder: 'go-example'
-        user_email: 'satvik@eltropy.com'
-        user_name: 'satvik-eltropy'
-        commit_message: 'Pushed the AWS ECR registry link'
-
-    - name: Push go-app1-deployment.yaml file
-      uses: dmnemec/copy_file_to_another_repo_action@main
-      env:
-        API_TOKEN_GITHUB: ${{ secrets.github-api-token }}
-      with:
-        source_file: 'go-app1-deployment.yaml'
-        destination_repo: 'satvik-eltropy/deployment-config'
-        destination_folder: 'go-app1'
-        user_email: 'satvik@eltropy.com'
-        user_name: 'satvik-eltropy'
-        commit_message: 'Pushed the AWS ECR registry link'
-
-    - name: Push go-app2-deployment.yaml file
-      uses: dmnemec/copy_file_to_another_repo_action@main
-      env:
-        API_TOKEN_GITHUB: ${{ secrets.github-api-token }}
-      with:
-        source_file: 'go-app2-deployment.yaml'
-        destination_repo: 'satvik-eltropy/deployment-config'
-        destination_folder: 'go-app2'
-        user_email: 'satvik@eltropy.com'
-        user_name: 'satvik-eltropy'
-        commit_message: 'Pushed the AWS ECR registry link'
-
-    - name: Get and run argoCD
-      env:
-        ARGOCD_SERVER: a921f0de06e1c4349b6e6f54cd8d3cec-1309917555.us-west-2.elb.amazonaws.com
-        ARGOCD_AUTH_TOKEN: ${{ secrets.argocd-auth-token }}
-      run: |
-        curl --insecure -sSL -o /usr/local/bin/argocd https://${ARGOCD_SERVER}/download/argocd-linux-amd64
-        chmod 755 /usr/local/bin/argocd
-        argocd app sync go-example-app --insecure
-        argocd app wait go-example-app --insecure
-        argocd app sync go-app1 --insecure
-        argocd app wait go-app1 --insecure
-        argocd app sync go-app2 --insecure
-        argocd app wait go-app2 --insecure
+        git config user.email ${GITHUB_EMAIL}
+        git config user.name ${GITHUB_NAME}
+        git commit -am "Updated the ecr image link in deployment files"
+        git push
