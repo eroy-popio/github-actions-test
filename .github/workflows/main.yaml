@@ -78,17 +78,3 @@ jobs:
         git config user.name ${GITHUB_NAME}
         git commit -am "Updated the ecr image link in deployment files"
         git push
-          
-    - name: Get and run argoCD
-      env:
-        ARGOCD_SERVER: a921f0de06e1c4349b6e6f54cd8d3cec-1309917555.us-west-2.elb.amazonaws.com
-        ARGOCD_AUTH_TOKEN: ${{ secrets.ARGOCD_AUTH_TOKEN }}
-      run: |
-        curl --insecure -sSL -o /usr/local/bin/argocd https://${ARGOCD_SERVER}/download/argocd-linux-amd64
-        chmod 755 /usr/local/bin/argocd
-        argocd app sync go-example-app --insecure
-        argocd app wait go-example-app --insecure
-        argocd app sync go-app1 --insecure
-        argocd app wait go-app1 --insecure
-        argocd app sync go-app2 --insecure
-        argocd app wait go-app2 --insecure
