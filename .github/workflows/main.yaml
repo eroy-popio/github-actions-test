@@ -2,7 +2,10 @@ name: Build and push golang image to AWS ECR instance
 
 on:
   push:
-   branches: [ main ]
+   branches: 
+    - main 
+   paths-ignore:
+    - '.github/workflows/**'
 jobs:
   build-and-push:
     name: Build and Push to ECR
