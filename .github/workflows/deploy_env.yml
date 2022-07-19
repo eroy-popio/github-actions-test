@@ -11,8 +11,6 @@ on:
 jobs:
   check-tests:
    uses: satvik-eltropy/github-actions-test/.github/workflows/unit_test.yml@main
-   with:
-    GO_VERSION: 1.15.x
 
   prod:
    needs: [ check-tests ]
