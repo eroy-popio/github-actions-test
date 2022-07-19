@@ -9,7 +9,13 @@ on:
      default: 'Dev'
 
 jobs:
+  check-tests:
+   uses: satvik-eltropy/github-actions-test/.github/workflows/unit_test.yml
+   with:
+    GO_VERSION: 1.15.x
+
   prod:
+   needs: [ check-tests ]
    if: github.event.inputs.releaseType == 'Prod'
    uses: satvik-eltropy/github-actions-test/.github/workflows/build&deploy.yml@main
    with:
@@ -20,6 +26,7 @@ jobs:
         API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
   
   dev:
+   needs: [ check-tests ]
    if: github.event.inputs.releaseType == 'Dev'
    uses: satvik-eltropy/github-actions-test/.github/workflows/build&deploy.yml@main
    with:
