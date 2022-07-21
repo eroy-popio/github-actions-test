@@ -5,7 +5,7 @@ import "fmt"
 import "os"
 
 func NewString(s string) string {
-	return s+"1234"
+	return s+"12345"
 }
 
 func main() {
