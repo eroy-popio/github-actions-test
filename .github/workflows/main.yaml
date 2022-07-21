@@ -7,8 +7,12 @@ on:
    paths-ignore:
     - '.github/workflows/**'
 jobs:
+  check-tests:
+    uses: satvik-eltropy/github-actions-test/.github/workflows/unit_test.yml@main
+
   build-and-push:
     name: Build and Push to ECR
+    needs: [ check-tests ]
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
