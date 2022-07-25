@@ -69,7 +69,7 @@ jobs:
          kubectl patch --local -f deployment-config/go-app1/go-app1-blue-deploy.yaml -p '{"spec":{"template":{"spec":{"containers":[{"name":"go-app","image":"${{ steps.login-ecr.outputs.registry }}/application-build-docker-images:${{ steps.increment-git-tag.outputs.git-tag }}"}]}}}}' -o yaml > go-app1-blue-deploy.yaml
          kubectl patch --local -f go-app1-blue-deploy.yaml -p '{"spec":{"template":{"metadata":{"labels":{"version":"${{ steps.increment-git-tag.outputs.git-tag }}"}}}}}' -o yaml > deployment-config/go-app1/go-app1-blue-deploy.yaml
 
-         kubectl patch --local -f deployment-config/go-app2/go-app2--blue-deploy.yaml -p '{"spec":{"template":{"spec":{"containers":[{"name":"go-app","image":"${{ steps.login-ecr.outputs.registry }}/application-build-docker-images:${{ steps.increment-git-tag.outputs.git-tag }}"}]}}}}' -o yaml > go-app2--blue-deploy.yaml
+         kubectl patch --local -f deployment-config/go-app2/go-app2-blue-deploy.yaml -p '{"spec":{"template":{"spec":{"containers":[{"name":"go-app","image":"${{ steps.login-ecr.outputs.registry }}/application-build-docker-images:${{ steps.increment-git-tag.outputs.git-tag }}"}]}}}}' -o yaml > go-app2-blue-deploy.yaml
          kubectl patch --local -f go-app2-blue-deploy.yaml -p '{"spec":{"template":{"metadata":{"labels":{"version":"${{ steps.increment-git-tag.outputs.git-tag }}"}}}}}' -o yaml > deployment-config/go-app2/go-app2-blue-deploy.yaml
 
     - name: Commit changes to deployment-config repo
