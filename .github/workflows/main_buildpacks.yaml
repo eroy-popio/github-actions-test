@@ -1,0 +1,53 @@
+name: Build and push golang image to AWS ECR instance
+
+on:
+  workflow_dispatch:
+
+jobs:
+
+  build-and-push:
+    name: Build and Push to ECR
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        path: github-actions-test
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-west-2
+
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+
+    - name: Download latest pack cli
+      run: |
+        sudo add-apt-repository ppa:cncf-buildpacks/pack-cli
+        sudo apt-get update
+        sudo apt-get install pack-cli
+
+    - name:  build image using google buildpack
+      run: |
+        pack build go-example:x --builder gcr.io/buildpacks/builder:v1
+        
+
+    - name: Automatic Tagging of Releases
+      id: increment-git-tag
+      run: |
+        cd github-actions-test
+        bash ./build/git_update.sh -v patch
+    
+    - name: Tag, and Push the Image to Amazon ECR
+      id: build-image
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        ECR_REPOSITORY: application-build-docker-images
+        IMAGE_TAG: ${{ steps.increment-git-tag.outputs.git-tag }}
+      run: |
+        docker tag go-example:x $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
