@@ -33,6 +33,7 @@ jobs:
 
     - name:  build image using google buildpack
       run: |
+        cd github-actions-test
         pack build go-example:x --builder gcr.io/buildpacks/builder:v1
         
 
