@@ -68,8 +68,12 @@ jobs:
          kubectl patch --local -f go-app1-blue-deploy.yaml -p '{"spec":{"template":{"metadata":{"labels":{"version":"${{ steps.increment-git-tag.outputs.git-tag }}"}}}}}' -o yaml > deployment-config/go-app1/go-app1-blue-deploy.yaml
          kubectl patch --local -f deployment-config/go-app2/go-app2-blue-deploy.yaml -p '{"spec":{"template":{"spec":{"containers":[{"name":"go-app","image":"${{ steps.login-ecr.outputs.registry }}/application-build-docker-images:${{ steps.increment-git-tag.outputs.git-tag }}"}]}}}}' -o yaml > go-app2-blue-deploy.yaml
          kubectl patch --local -f go-app2-blue-deploy.yaml -p '{"spec":{"template":{"metadata":{"labels":{"version":"${{ steps.increment-git-tag.outputs.git-tag }}"}}}}}' -o yaml > deployment-config/go-app2/go-app2-blue-deploy.yaml
-         kubectl patch --local -f deployment-config/go-app3/go-app3-rollout.yaml -p '{"spec":{"template":{"spec":{"containers":[{"name":"go-app","image":"${{ steps.login-ecr.outputs.registry }}/application-build-docker-images:${{ steps.increment-git-tag.outputs.git-tag }}"}]}}}}' -o yaml --type merge > go-app3-rollout.yaml
-         kubectl patch --local -f go-app3-rollout.yaml -p '{"spec":{"template":{"metadata":{"labels":{"version":"${{ steps.increment-git-tag.outputs.git-tag }}"}}}}}' -o yaml --type merge > deployment-config/go-app3/go-app3-rollout.yaml
+    - name: Update Destination rule and rollout specs
+      uses: mikefarah/yq@master
+      with:
+        cmd: |
+          yq -i '.spec.subsets[1].labels.version = "${{ steps.increment-git-tag.outputs.git-tag }}"' 'deployment-config/go-app2/go-app2-destination.yaml'
+          yq -i '.spec.template.metadata.labels.version = "${{ steps.increment-git-tag.outputs.git-tag }}" | .spec.template.spec.containers[0].image = "${{ steps.login-ecr.outputs.registry }}/application-build-docker-images:${{ steps.increment-git-tag.outputs.git-tag }}"' 'deployment-config/go-app3/go-app3-rollout.yaml'
 
     - name: Commit changes to deployment-config repo
       env:
