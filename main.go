@@ -12,7 +12,7 @@ func main() {
 	r := gin.Default()
 
 	host := os.Getenv("HOSTNAME")
-	reply:= fmt.Sprintf("Hello from %s V6 \n", host)
+	reply:= fmt.Sprintf("Hello from %s V7 \n", host)
 	newStr := NewString("Hello, World! ")
 	appName := os.Getenv("APPNAME")
 	if appName == "" {
