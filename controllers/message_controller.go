@@ -4,9 +4,10 @@ import (
 	"context"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
-	"helloworld/domain"
+	"helloworld/models"
+	"helloworld/services"
+	"net/http"
 )
 
 func insertOne(client *mongo.Client, ctx context.Context, dataBase, col string, doc interface{})(*mongo.InsertOneResult, error) {
@@ -22,24 +23,37 @@ return result, err
 }
 
 func CreateMessage(c *gin.Context) {
-	coll := domain.MongoClient.Database("test").Collection("messages")
+	//coll := domain.MongoClient.Database("test").Collection("messages")
+	//
+	//var doc interface{}
+	//
+	//doc = bson.D{
+	//	{"rollNo", 175},
+	//	{"maths", 80},
+	//	{"science", 90},
+	//	{"computer", 95},
+	//}
+	//
+	//result, err := coll.InsertOne(context.TODO(), doc)
+	//
+	//if err != nil {
+	//	panic(err)
+	//}
+	//
+	//fmt.Printf("Inserted document with _id: %v\n", result.InsertedID)
 
-	var doc interface{}
-
-	doc = bson.D{
-		{"rollNo", 175},
-		{"maths", 80},
-		{"science", 90},
-		{"computer", 95},
+	var message models.Message
+	if err := c.ShouldBindJSON(&message); err != nil {
+		fmt.Println(err)
+		return
 	}
-
-	result, err := coll.InsertOne(context.TODO(), doc)
-
+	msg, err := services.CreateMessage(&message)
 	if err != nil {
-		panic(err)
+		fmt.Println(err)
+		return
 	}
+	c.JSON(http.StatusCreated, msg)
 
-	fmt.Printf("Inserted document with _id: %v\n", result.InsertedID)
 
 }
 

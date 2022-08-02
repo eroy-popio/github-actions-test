@@ -3,6 +3,7 @@ package domain
 import (
 	"context"
 	"fmt"
+	"helloworld/models"
 	"time"
 
 	"go.mongodb.org/mongo-driver/mongo"
@@ -75,4 +76,17 @@ func InitialiseMongoDB() {
 	//if err != nil {
 	//	panic(err)
 	//}
+}
+
+func Create(msg *models.Message) (*models.Message, error) {
+	coll := MongoClient.Database("test").Collection("messages")
+	result, err := coll.InsertOne(context.TODO(), msg)
+
+	if err != nil {
+		return nil, err
+	}
+
+	fmt.Printf("Inserted document with _id: %v\n", result.InsertedID)
+	msg.Id = result.InsertedID
+	return msg, nil
 }
