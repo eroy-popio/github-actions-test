@@ -1,13 +1,12 @@
 package models
 
 import (
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"time"
 )
 
 type Message struct {
-	Id        primitive.ObjectID      `json:"id"`
-	Title     string    `json:"title"`
-	Body      string    `json:"body"`
-	CreatedAt time.Time `json:"created_at"`
+	Id        int64					`json:"id" bson:"_id"`
+	Title     string    			`json:"title" bson:"title"`
+	Body      string    			`json:"body" bson:"body"`
+	CreatedAt time.Time 			`json:"created_at" bson:"createdAt"`
 }

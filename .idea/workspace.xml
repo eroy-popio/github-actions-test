@@ -20,14 +20,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a6780a5c-0b6c-4e1f-8fd5-0a49174bfbaf" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/app/app.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/routes.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/controllers/message_controller.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/domain/message.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/services/message_service.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controllers/message_controller.go" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/message_controller.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/domain/message.go" beforeDir="false" afterPath="$PROJECT_DIR$/domain/message.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/message_model.go" beforeDir="false" afterPath="$PROJECT_DIR$/models/message_model.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/message_service.go" beforeDir="false" afterPath="$PROJECT_DIR$/services/message_service.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

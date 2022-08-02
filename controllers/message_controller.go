@@ -1,62 +1,53 @@
 package controllers
 
 import (
-	"context"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"go.mongodb.org/mongo-driver/mongo"
 	"helloworld/models"
 	"helloworld/services"
 	"net/http"
+	"strconv"
 )
 
-func insertOne(client *mongo.Client, ctx context.Context, dataBase, col string, doc interface{})(*mongo.InsertOneResult, error) {
-
-// select database and collection ith Client.Database method
-// and Database.Collection method
-collection := client.Database(dataBase).Collection(col)
-
-// InsertOne accept two argument of type Context
-// and of empty interface
-result, err := collection.InsertOne(ctx, doc)
-return result, err
-}
-
 func CreateMessage(c *gin.Context) {
-	//coll := domain.MongoClient.Database("test").Collection("messages")
-	//
-	//var doc interface{}
-	//
-	//doc = bson.D{
-	//	{"rollNo", 175},
-	//	{"maths", 80},
-	//	{"science", 90},
-	//	{"computer", 95},
-	//}
-	//
-	//result, err := coll.InsertOne(context.TODO(), doc)
-	//
-	//if err != nil {
-	//	panic(err)
-	//}
-	//
-	//fmt.Printf("Inserted document with _id: %v\n", result.InsertedID)
-
 	var message models.Message
 	if err := c.ShouldBindJSON(&message); err != nil {
 		fmt.Println(err)
 		return
 	}
-	msg, err := services.CreateMessage(&message)
+	err := services.CreateMessage(&message)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	c.JSON(http.StatusCreated, msg)
-
-
+	c.JSON(http.StatusCreated, "Message Created Successfully")
 }
 
-func UpdateMessage(c *gin.Context) {
+func getMessageId(msgIdParam string) (int64, error) {
+	msgId, err := strconv.ParseInt(msgIdParam, 10, 64)
+	if err != nil {
+		return 0, err
+	}
+	return msgId, nil
+}
 
+
+func UpdateMessage(c *gin.Context) {
+	msgId, err := getMessageId(c.Param("message_id"))
+	if err != nil {
+		panic(err)
+		return
+	}
+	var message models.Message
+	if err := c.ShouldBindJSON(&message); err != nil {
+		panic(err)
+		return
+	}
+	message.Id = msgId
+	err = services.UpdateMessage(&message)
+	if err != nil {
+		panic(err)
+		return
+	}
+	c.JSON(http.StatusOK, "Message Updated Successfully")
 }

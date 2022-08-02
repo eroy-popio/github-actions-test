@@ -6,11 +6,19 @@ import (
 	"time"
 )
 
-func CreateMessage(message *models.Message) (*models.Message, error) {
+func CreateMessage(message *models.Message)  error {
 	message.CreatedAt = time.Now()
-	message, err := domain.Create(message)
+	err := domain.Create(message)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return message, nil
+	return nil
+}
+
+func UpdateMessage(message *models.Message) error {
+	err := domain.Update(message)
+	if err != nil {
+		return err
+	}
+	return nil
 }
