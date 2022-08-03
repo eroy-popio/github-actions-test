@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"go.mongodb.org/mongo-driver/bson"
 	"helloworld/models"
+	error_utils "helloworld/utils"
 	"time"
 
 	"go.mongodb.org/mongo-driver/mongo"
@@ -13,7 +14,7 @@ import (
 )
 
 var (
-	MongoClient  *mongo.Client
+	MongoCollection *mongo.Collection
 )
 
 func connect(uri string)(*mongo.Client, context.Context, context.CancelFunc, error) {
@@ -34,40 +35,44 @@ func ping(client *mongo.Client, ctx context.Context) error{
 	return nil
 }
 
-func InitialiseMongoDB() {
+func InitialiseMongoDB(test bool) {
 	client, ctx, _, err := connect("mongodb://localhost:27017")
 	if err != nil {
 		panic(err)
 	}
-	MongoClient = client
 	//defer close(client, ctx, cancel)
 	err = ping(client, ctx)
 	if err != nil {
 		panic(err)
 	}
+	if test {
+		MongoCollection = client.Database("test").Collection("messages_test")
+	} else {
+		MongoCollection = client.Database("test").Collection("messages")
+	}
 }
 
-func Create(msg *models.Message) error {
-	coll := MongoClient.Database("test").Collection("messages")
-	result, err := coll.InsertOne(context.TODO(), msg)
+func Create(msg *models.Message) error_utils.MessageErr {
+
+	result, err := MongoCollection.InsertOne(context.TODO(), msg)
 	if err != nil {
-		return err
+		return error_utils.NewInternalServerError(fmt.Sprintf("error when trying to save message: %s", err.Error()))
 	}
 	fmt.Printf("Inserted document with _id: %v\n", result.InsertedID)
 	return  nil
 }
 
-func Update(msg *models.Message) error {
-	coll := MongoClient.Database("test").Collection("messages")
+func Update(msg *models.Message) error_utils.MessageErr {
 	var res models.Message
-	err := coll.FindOne(context.TODO(),bson.M{"_id":msg.Id}).Decode(&res)
+	err := MongoCollection.FindOne(context.TODO(),bson.M{"_id":msg.Id}).Decode(&res)
 	if err != nil {
-		return err
+		return error_utils.NewInternalServerError(fmt.Sprintf("error when trying to find message: %s", err.Error()))
 	}
 	msg.CreatedAt =  res.CreatedAt
-	result, err := coll.UpdateOne(context.TODO(), bson.M{"_id":msg.Id},msg)
+	update := bson.M{"$set": msg}
+	result, err := MongoCollection.UpdateOne(context.TODO(), bson.M{"_id":msg.Id},update)
 	if err != nil {
-		return err
+		return error_utils.NewInternalServerError(fmt.Sprintf("error when trying to update message: %s", err.Error()))
 	}
 	fmt.Printf("No. of documents updated: %v\n", result.ModifiedCount)
 	return  nil

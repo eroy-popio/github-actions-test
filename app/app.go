@@ -11,7 +11,7 @@ var (
 )
 
 func StartingFunction(){
-	domain.InitialiseMongoDB()
+	domain.InitialiseMongoDB(false)
 	fmt.Println("DATABASE STARTED")
 	routes()
 	router.Run(":8080")
