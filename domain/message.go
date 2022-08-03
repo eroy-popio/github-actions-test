@@ -66,6 +66,9 @@ func Update(msg *models.Message) error_utils.MessageErr {
 	var res models.Message
 	err := MongoCollection.FindOne(context.TODO(),bson.M{"_id":msg.Id}).Decode(&res)
 	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			return error_utils.NewNotFoundError("no record matching given id")
+		}
 		return error_utils.NewInternalServerError(fmt.Sprintf("error when trying to find message: %s", err.Error()))
 	}
 	msg.CreatedAt =  res.CreatedAt

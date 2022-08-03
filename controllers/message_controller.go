@@ -23,13 +23,13 @@ func CreateMessage(c *gin.Context) {
 		c.JSON(err.Status(), err)
 		return
 	}
-	c.JSON(http.StatusCreated, "Message Created Successfully")
+	c.JSON(http.StatusCreated, message)
 }
 
-func getMessageId(msgIdParam string) (int64, error) {
+func getMessageId(msgIdParam string) (int64, error_utils.MessageErr) {
 	msgId, err := strconv.ParseInt(msgIdParam, 10, 64)
 	if err != nil {
-		return 0, err
+		return 0, error_utils.NewBadRequestError("message id should be a number")
 	}
 	return msgId, nil
 }
@@ -38,21 +38,22 @@ func getMessageId(msgIdParam string) (int64, error) {
 func UpdateMessage(c *gin.Context) {
 	msgId, err := getMessageId(c.Param("message_id"))
 	if err != nil {
-		panic(err)
+		c.JSON(err.Status(), err)
 		return
 	}
 	var message models.Message
 	if err := c.ShouldBindJSON(&message); err != nil {
-		panic(err)
+		theErr := error_utils.NewUnprocessibleEntityError("invalid json body")
+		c.JSON(theErr.Status(), theErr)
 		return
 	}
 	message.Id = msgId
 	err = services.UpdateMessage(&message)
 	if err != nil {
-		panic(err)
+		c.JSON(err.Status(), err)
 		return
 	}
-	c.JSON(http.StatusOK, "Message Updated Successfully")
+	c.JSON(http.StatusOK, message)
 }
 
 func Hello(c *gin.Context) {

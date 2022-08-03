@@ -133,8 +133,10 @@ func TestUpdateMessage(t *testing.T) {
 			// "second title" belongs to the second message so, the cannot be used for the first message
 			id:         strconv.Itoa(int(firstId)),
 			inputJSON:  `{"title":"second title", "body": "update body"}`,
-			statusCode: 500,
-			errMessage: "title already taken",
+			statusCode: 200,
+			title:      "second title",
+			body:       "update body",
+			errMessage: "",
 		},
 		{
 			//Empty title
@@ -165,7 +167,7 @@ func TestUpdateMessage(t *testing.T) {
 			errMessage: "invalid json body",
 		},
 		{
-			id:         "unknwon",
+			id:         "unknown",
 			statusCode: 400,
 			errMessage: "message id should be a number",
 		},
