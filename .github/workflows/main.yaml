@@ -1,6 +1,7 @@
 name: Build and push golang image to AWS ECR instance
 
 on:
+  workflow_dispatch:
   push:
    branches: 
     - main 
