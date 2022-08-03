@@ -47,6 +47,16 @@ jobs:
       run: |
         cd github-actions-test
         earthly +docker
+        
+    - name: Pull and run the MongoDB image using Docker 
+      run: |
+        cd github-actions-test
+        docker run -d -p 27017:27017 --name test-mongo mongo:latest
+        
+    - name: Run the integration tests for the application
+      run: |
+        cd github-actions-test/integration_test
+        go test -v
 
     - name: Automatic Tagging of Releases
       id: increment-git-tag
