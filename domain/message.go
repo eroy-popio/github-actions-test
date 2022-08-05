@@ -2,6 +2,7 @@ package domain
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"go.mongodb.org/mongo-driver/bson"
 	"helloworld/models"
@@ -84,4 +85,24 @@ func Update(msg *models.Message) error_utils.MessageErr {
 	}
 	fmt.Printf("No. of documents updated: %v\n", result.ModifiedCount)
 	return  nil
+}
+
+func Get() ([]byte, error_utils.MessageErr) {
+	var res models.Message
+	opts := options.FindOne().SetSort(bson.D{{"created_at", -1}})
+	err := MongoCollection.FindOne(context.TODO(),bson.D{},opts).Decode(&res)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			return nil, error_utils.NewNotFoundError("No record found")
+		}
+		return nil, error_utils.NewInternalServerError(fmt.Sprintf("error when trying to find message: %s", err.Error()))
+	}
+
+	b, err := json.Marshal(res)
+	if err != nil {
+		fmt.Println(err)
+		return nil, nil
+	}
+	fmt.Printf("No. of documents updated: %v\n", string(b))
+	return b,nil
 }

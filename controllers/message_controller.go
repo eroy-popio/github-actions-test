@@ -56,6 +56,15 @@ func UpdateMessage(c *gin.Context) {
 	c.JSON(http.StatusOK, message)
 }
 
+func GetMessage(c *gin.Context) {
+	res, err := services.GetMessage()
+	if err != nil {
+		c.JSON(err.Status(), err)
+		return
+	}
+	c.JSON(http.StatusOK, string(res))
+}
+
 func Hello(c *gin.Context) {
 	newStr := NewString("Hello, World! ")
 	c.String(200, newStr)

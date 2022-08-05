@@ -29,3 +29,11 @@ func UpdateMessage(message *models.Message) error_utils.MessageErr {
 	}
 	return nil
 }
+
+func GetMessage() ([]byte, error_utils.MessageErr) {
+	res, err := domain.Get()
+	if err != nil {
+		return nil, err
+	}
+	return res,nil
+}

@@ -10,8 +10,12 @@ func routes() {
 	if appName == "" {
 		appName = "app"
 	}
-	router.POST("/messages", controllers.CreateMessage)
-	router.PUT("/messages/:message_id", controllers.UpdateMessage)
+	router.POST("/"+appName+"/messages", controllers.CreateMessage)
+
+	router.PUT("/"+appName+"/messages/:message_id", controllers.UpdateMessage)
+
+	router.GET("/"+appName+"/message", controllers.GetMessage)
+
 	router.GET("/hello", controllers.Hello)
 
 	router.GET("/"+appName+"/hello", controllers.HelloAppName)
