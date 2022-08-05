@@ -6,6 +6,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"helloworld/models"
 	error_utils "helloworld/utils"
+	"os"
 	"time"
 
 	"go.mongodb.org/mongo-driver/mongo"
@@ -36,7 +37,11 @@ func ping(client *mongo.Client, ctx context.Context) error{
 }
 
 func InitialiseMongoDB(test bool) {
-	client, ctx, _, err := connect("mongodb://localhost:27017")
+	mongosvc := os.Getenv("MONGO_SVC")
+	if mongosvc == "" {
+		mongosvc = "localhost:27017"
+	}
+	client, ctx, _, err := connect("mongodb://"+mongosvc)
 	if err != nil {
 		panic(err)
 	}
