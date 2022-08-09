@@ -11,7 +11,8 @@ deps:
 
 build:
     FROM +deps
-    COPY main.go .
+    COPY . .
+    RUN ls -al
     RUN go build -o build/go-example main.go
     SAVE ARTIFACT build/go-example /go-example
 

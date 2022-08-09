@@ -1,9 +1,12 @@
 package main
 
-import "testing"
+import (
+	"helloworld/controllers"
+	"testing"
+)
 
 func TestNewString(t *testing.T) {
-	if NewString("Hello, World! ") != "Hello, World! 12345"{
+	if controllers.NewString("Hello, World! ") != "Hello, World! 12345"{
 		t.Error("Not the expected test output")
 	}
 }
