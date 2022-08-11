@@ -19,6 +19,8 @@ jobs:
     - name: Run the auth-server
       run: |
         ls
+        cd github-actions-test/semaphore-auth-server
+        ls
         docker build -t auth-server-image .
         docker run -d -p 8001:8001 --name auth-server auth-server-image
         
