@@ -20,9 +20,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a6780a5c-0b6c-4e1f-8fd5-0a49174bfbaf" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/semaphore-auth-server" beforeDir="false" afterPath="$PROJECT_DIR$/semaphore-auth-server" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/semaphore-web-server" beforeDir="false" afterPath="$PROJECT_DIR$/semaphore-web-server" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/auth-server/Dockerfile" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/auth-server/go.mod" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/auth-server/go.sum" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/auth-server/main.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web-server/auth.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web-server/go.mod" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web-server/go.sum" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web-server/main.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web-server/web_test.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.github/workflows/main.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/main.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/semaphore-auth-server" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/semaphore-web-server" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -44,12 +54,15 @@
     <option name="indexEntireGoPath" value="false" />
   </component>
   <component name="ProjectId" id="2CnUIiaigb81MecV57mrdLJlv1d" />
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="DefaultGoTemplateProperty" value="Go File" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
@@ -89,6 +102,9 @@
       </map>
     </option>
     <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
   </component>
   <component name="VgoProject">
     <integration-enabled>true</integration-enabled>

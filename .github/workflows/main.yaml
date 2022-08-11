@@ -22,12 +22,12 @@ jobs:
       run: |
         ls
         git branch
-        cd github-actions-test/semaphore-auth-server
+        cd github-actions-test/auth-server
         docker build -t auth-server-image .
         docker run -d -p 8001:8001 --name auth-server auth-server-image
         
     - name: Run the integration tests for the application
       run: |
         ls
-        cd github-actions-test/semaphore-web-server
+        cd github-actions-test/web-server
         go test -tags integration
