@@ -1,4 +1,4 @@
-name: Build and push golang image to AWS ECR instance
+name: Multiple service integration testing
 
 on:
   workflow_dispatch:
@@ -10,7 +10,7 @@ on:
 jobs:
 
   build-and-push:
-    name: Build and Push to ECR
+    name: Build image for integration testing
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
@@ -22,12 +22,12 @@ jobs:
       run: |
         ls
         git branch
-        cd semaphore-auth-server
+        cd github-actions-test/semaphore-auth-server
         docker build -t auth-server-image .
         docker run -d -p 8001:8001 --name auth-server auth-server-image
         
     - name: Run the integration tests for the application
       run: |
         ls
-        cd semaphore-web-server
+        cd github-actions-test/semaphore-web-server
         go test -tags integration

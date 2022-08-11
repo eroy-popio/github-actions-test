@@ -20,27 +20,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a6780a5c-0b6c-4e1f-8fd5-0a49174bfbaf" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.github/workflows/build&amp;deploy.yml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.github/workflows/codeql.yml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.github/workflows/dependency-review.yml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.github/workflows/deploy_env.yml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.github/workflows/main.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/main.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.github/workflows/main_buildpacks.yaml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.github/workflows/unit_test.yml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Earthfile" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/app.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/routes.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/git_update.sh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/controllers/message_controller.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/domain/message.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/integration_test/message_controller_integration_test.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/integration_test/setup_test.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/main_test.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/message_model.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/message_service.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils/error_utils.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/semaphore-auth-server" beforeDir="false" afterPath="$PROJECT_DIR$/semaphore-auth-server" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/semaphore-web-server" beforeDir="false" afterPath="$PROJECT_DIR$/semaphore-web-server" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
