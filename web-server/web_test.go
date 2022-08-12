@@ -46,7 +46,7 @@ func TestUserRequestAuthentication(t *testing.T) {
 func TestUserRequestAuthenticationAfterLoggingOut(t *testing.T) {
 	username := "user1"
 	// Login
-	lr := a.Login(username, "pass1")
+	lr := a.Login(username, "pass12")
 
 	// Test that the user is logged out successfully
 	if !a.Logout(username, lr.Token) {
