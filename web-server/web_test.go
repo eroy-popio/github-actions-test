@@ -17,7 +17,7 @@ func TestWrongUsernamePassword(t *testing.T) {
 
 // User should be able to login with the right username/password
 func TestCorrectUsernamePassword(t *testing.T) {
-	if a.Login("user1", "pass").Token == "" {
+	if a.Login("user1", "pass1").Token == "" {
 		t.Fail()
 	}
 }
